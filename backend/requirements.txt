@@ -9,7 +9,7 @@ email-validator>=2.0.0
 sqlalchemy>=2.0.35
 alembic>=1.13.2
 asyncpg>=0.29.0
-psycopg2-binary>=2.9.9  # Required for Alembic migrations and MLflow
+psycopg2>=2.9.0  # Required for Alembic migrations and MLflow (compiled from source)
 
 # ML & Data
 scikit-learn>=1.5.2

@@ -94,14 +94,10 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - MLFLOW_BACKEND_STORE_URI=postgresql://aml:aml@postgres:5432/fineract_aml
       - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlflow/artifacts
-    depends_on:
-      postgres:
-        condition: service_healthy
     volumes:
       - mlflow-data:/mlflow/artifacts
-    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri postgresql://aml:aml@postgres:5432/fineract_aml --default-artifact-root /mlflow/artifacts
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////mlflow/artifacts/mlflow.db --default-artifact-root /mlflow/artifacts
 
   # ── Compliance Dashboard ─────────────────────────────────
   dashboard:
