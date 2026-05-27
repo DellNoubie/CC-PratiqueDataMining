@@ -21,7 +21,7 @@ services:
     volumes:
       - ./backend:/app
       - model-data:/app/models
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
   # ── Celery Worker ────────────────────────────────────────
   celery-worker:
@@ -42,6 +42,8 @@ services:
       - ./backend:/app
       - model-data:/app/models
     command: celery -A app.tasks.celery_app worker --loglevel=info --concurrency=4
+    healthcheck:
+      disable: true
 
   # ── Celery Beat (scheduler) ──────────────────────────────
   celery-beat:
@@ -56,6 +58,8 @@ services:
     volumes:
       - ./backend:/app
     command: celery -A app.tasks.celery_app beat --loglevel=info
+    healthcheck:
+      disable: true
 
   # ── PostgreSQL ───────────────────────────────────────────
   postgres:
@@ -73,7 +77,8 @@ services:
       test: ["CMD-SHELL", "pg_isready -U aml -d fineract_aml"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 20
+      start_period: 90s
 
   # ── Redis ────────────────────────────────────────────────
   redis:

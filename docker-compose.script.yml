@@ -1,0 +1,7 @@
+services:
+  api:
+    command: >
+      sh -c "
+        python -m app.scripts.import_paysim --file '/app/paysim dataset.csv' --limit 250 &&
+        python -m app.scripts.label_paysim --limit 250
+      "

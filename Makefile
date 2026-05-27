@@ -86,3 +86,17 @@ setup: dev ## Full setup: start services, migrate, seed
 	@echo ""
 	@echo "Setup complete! Login with admin / admin123"
 	@echo "Dashboard: http://localhost:3000"
+
+# ── PaySim Pipeline ────────────────────────────────────────
+
+paysim-import: ## Import PaySim dataset into DB (--limit 250 by default)
+	docker compose exec api python -m app.scripts.import_paysim --file "/app/paysim dataset.csv" --limit 250
+
+paysim-label: ## Create Alert+Review labels from imported PaySim transactions
+	docker compose exec api python -m app.scripts.label_paysim --limit 250
+
+paysim-train: ## Retrain XGBoost fraud classifier on labeled data
+	docker compose run --rm -e PYTHONPATH=/app api python -c \
+		"from app.tasks.training import retrain_fraud_classifier; retrain_fraud_classifier()"
+
+paysim-pipeline: paysim-import paysim-label paysim-train ## Full pipeline: import → label → train
